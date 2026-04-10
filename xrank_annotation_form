@@ -148,9 +148,12 @@
 
 <script>
 // ════════════════════════════════════════════════════
-// ★ REPLACE with your Google Apps Script Web App URL
+// ★ PASTE YOUR WEB APP URL BELOW
+//   It must look like:
+//   https://script.google.com/macros/s/AKfycb.../exec
+//   NOT the editor URL (/home/projects/.../edit)
 // ════════════════════════════════════════════════════
-const APPS_SCRIPT_URL = "https://script.google.com/u/0/home/projects/1zVoNQp7NXSvHPMjprEFASpklFbyRkVdb6OGyNluswkldtcZHqjrrwhim/edit";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxRZnhdhR0SH4rCUFWiHHtzjfoJ0sOpkDdVBLHDSluNTe8-jBrCb8CshL-I-u95MiP0/exec";
 
 const ASPECTS = [
   { key:'similarity',           label:'A — Similarity',          desc:'The keyphrase closely matches the core topic or meaning of the document.' },
@@ -360,12 +363,17 @@ async function submitAll(){
   document.getElementById('submittingOverlay').classList.add('show');
   document.getElementById('screen-doc').style.display='none';
   try{
-    if(APPS_SCRIPT_URL!=="https://script.google.com/u/0/home/projects/1zVoNQp7NXSvHPMjprEFASpklFbyRkVdb6OGyNluswkldtcZHqjrrwhim/edit"){
+    // URL must contain /macros/s/ and end with /exec to be a valid deployed Web App
+    const isValidUrl = APPS_SCRIPT_URL.includes('/macros/s/') && APPS_SCRIPT_URL.endsWith('/exec');
+    if(!isValidUrl){
+      console.warn('Apps Script URL not configured. Format must be: https://script.google.com/macros/s/AKfycb.../exec');
+    } else {
       await fetch(APPS_SCRIPT_URL,{
         method:'POST', mode:'no-cors',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify(payload)
       });
+      console.log('Responses submitted to Google Sheet.');
     }
   } catch(e){ console.warn('Submit error:',e); }
   document.getElementById('submittingOverlay').classList.remove('show');
